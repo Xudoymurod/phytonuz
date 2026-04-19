@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Lug'at — O'zbekcha</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e12;
+    --bg2: #16161c;
+    --bg3: #1e1e28;
+    --border: #2a2a38;
+    --accent: #7c6af7;
+    --accent2: #4fd1c5;
+    --accent3: #f6ad55;
+    --text: #e8e8f0;
+    --muted: #7a7a96;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Noto Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* --- HEADER --- */
+  header {
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #12101e 0%, var(--bg) 100%);
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 200px;
+    background: radial-gradient(ellipse at center, rgba(124,106,247,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .logo {
+    font-family: var(--mono);
+    font-size: 2.6rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: var(--text);
+  }
+
+  .logo span {
+    color: var(--accent);
+  }
+
+  .tagline {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* --- SEARCH --- */
+  .search-wrap {
+    max-width: 640px;
+    margin: 2rem auto 0;
+    position: relative;
+  }
+
+  .search-wrap input {
+    width: 100%;
+    background: var(--bg2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 0.9rem 1rem 0.9rem 3rem;
+    font-size: 1rem;
+    color: var(--text);
+    font-family: var(--sans);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-wrap input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(124,106,247,0.15);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 1rem; top: 50%; transform: translateY(-50%);
+    width: 18px; height: 18px;
+    opacity: 0.45;
+  }
+
+  /* --- TABS --- */
+  .tabs-wrap {
+    max-width: 900px;
+    margin: 2rem auto 0;
+    padding: 0 1.5rem;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+
+  .tab {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.18s;
+    letter-spacing: 0.03em;
+  }
+
+  .tab:hover { border-color: var(--accent); color: var(--accent); }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* --- MAIN CONTENT --- */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .result-count {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.03em;
+  }
+
+  /* --- CARDS --- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--card-accent, var(--accent));
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: 14px 14px 0 0;
+  }
+
+  .card:hover {
+    border-color: var(--card-accent, var(--accent));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+
+  .card:hover::after { opacity: 1; }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .keyword {
+    font-family: var(--mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .trans {
+    font-size: 0.88rem;
+    color: var(--accent2);
+    margin-top: 6px;
+    font-weight: 600;
+  }
+
+  .desc {
+    font-size: 0.82rem;
+    color: #9898b8;
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+
+  .example-block {
+    margin-top: 10px;
+    background: var(--bg3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: none;
+  }
+
+  .card.open .example-block { display: block; }
+
+  .example-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+  }
+
+  .example-code {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: #c9d1d9;
+    white-space: pre;
+    line-height: 1.7;
+  }
+
+  .toggle-hint {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 10px;
+    font-family: var(--mono);
+    opacity: 0.6;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  /* CATEGORY COLORS */
+  .c-var  { --card-accent: #7c6af7; }
+  .c-op   { --card-accent: #f6ad55; }
+  .c-cond { --card-accent: #68d391; }
+  .c-loop { --card-accent: #63b3ed; }
+  .c-func { --card-accent: #fc8181; }
+  .c-type { --card-accent: #4fd1c5; }
+  .c-coll { --card-accent: #d6bcfa; }
+  .c-err  { --card-accent: #f687b3; }
+  .c-oop  { --card-accent: #fbb6ce; }
+  .c-mod  { --card-accent: #faf089; }
+
+  .badge-var  { background: rgba(124,106,247,0.15); color: #b794f4; }
+  .badge-op   { background: rgba(246,173,85,0.15);  color: #f6ad55; }
+  .badge-cond { background: rgba(104,211,145,0.15); color: #68d391; }
+  .badge-loop { background: rgba(99,179,237,0.15);  color: #63b3ed; }
+  .badge-func { background: rgba(252,129,129,0.15); color: #fc8181; }
+  .badge-type { background: rgba(79,209,197,0.15);  color: #4fd1c5; }
+  .badge-coll { background: rgba(214,188,250,0.15); color: #d6bcfa; }
+  .badge-err  { background: rgba(246,135,179,0.15); color: #f687b3; }
+  .badge-oop  { background: rgba(251,182,206,0.15); color: #fbb6ce; }
+  .badge-mod  { background: rgba(250,240,137,0.15); color: #d4aa00; }
+
+  /* --- FOOTER --- */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .logo { font-size: 1.8rem; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">py<span>.</span>lug'at</div>
+  <p class="tagline">Python — O'zbekcha izohli lug'at · 60+ so'z</p>
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" id="searchInput" placeholder="Qidirish: loop, tsikl, def, funksiya..." autocomplete="off" />
+  </div>
+</header>
+
+<div class="tabs-wrap" id="tabsWrap"></div>
+
+<main>
+  <div class="result-count" id="resultCount"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>python lugati · o'quv maqsadida yaratilgan</footer>
+
+<script>
+const CATS = {
+  "Hammasi": null,
+  "O'zgaruvchilar": "var",
+  "Operatorlar": "op",
+  "Shartlar": "cond",
+  "Tsikllar": "loop",
+  "Funksiyalar": "func",
+  "Turlar": "type",
+  "Ro'yxat/Lug'at": "coll",
+  "Xato ushlash": "err",
+  "OOP": "oop",
+  "Modullar": "mod",
+};
+
+const CAT_LABEL = Object.fromEntries(
+  Object.entries(CATS).filter(([,v])=>v).map(([k,v])=>[v,k])
+);
+
+const DATA = [
+  // VAR
+  {kw:"variable",uz:"o'zgaruvchi",cat:"var",
+   desc:"Ma'lumotni vaqtinchalik saqlash uchun ishlatiladi. Nom berib, unga qiymat yoziladi.",
+   ex:"ism = 'Ali'\nyosh = 25\nprint(ism, yosh)"},
+  {kw:"print()",uz:"ekranga chiqarish",cat:"var",
+   desc:"Natijani konsolga (ekranga) chiqarish uchun ishlatiladi. Eng ko'p ishlatiladigan funksiya.",
+   ex:"print('Salom, dunyo!')\nprint(42)\nprint('Yosh:', 20)"},
+  {kw:"input()",uz:"foydalanuvchidan kiritish",cat:"var",
+   desc:"Foydalanuvchidan klaviaturadan ma'lumot olish uchun ishlatiladi.",
+   ex:"ism = input('Ismingiz: ')\nprint('Salom,', ism)"},
+  {kw:"comment (#)",uz:"izoh",cat:"var",
+   desc:"Kod ichida tushuntirish yozish uchun. Python bu qatorni bajarmaydi.",
+   ex:"# Bu izoh — bajarilmaydi\nx = 5  # bu ham izoh"},
+  {kw:"=",uz:"qiymat berish (assignment)",cat:"var",
+   desc:"O'zgaruvchiga qiymat yozish uchun. Matematikadagi tenglik belgisidan farqli.",
+   ex:"x = 10\nmatn = 'Python'\nbool_qiym = True"},
+  {kw:"del",uz:"o'zgaruvchini o'chirish",cat:"var",
+   desc:"O'zgaruvchini xotiradan o'chiradi.",
+   ex:"x = 5\ndel x\n# print(x)  # xato beradi!"},
+
+  // OPERATORS
+  {kw:"+ - * /",uz:"arifmetik operatorlar",cat:"op",
+   desc:"Qo'shish, ayirish, ko'paytirish, bo'lish amallari.",
+   ex:"print(5 + 3)   # 8\nprint(10 - 4)  # 6\nprint(3 * 4)   # 12\nprint(9 / 2)   # 4.5"},
+  {kw:"//",uz:"butun bo'lish",cat:"op",
+   desc:"Bo'lishdan faqat butun qismini oladi, kasr qismini tashlab yuboradi.",
+   ex:"print(7 // 2)   # 3\nprint(10 // 3)  # 3"},
+  {kw:"%",uz:"qoldiq (modulo)",cat:"op",
+   desc:"Bo'lishdan qolgan qoldiqni topadi. Juft/toq tekshirishda ko'p ishlatiladi.",
+   ex:"print(10 % 3)  # 1\nprint(8 % 2)   # 0 (juft)"},
+  {kw:"**",uz:"daraja ko'tarish",cat:"op",
+   desc:"Sonni darajaga ko'taradi. Masalan, 2**8 = 2 ning 8-darajasi.",
+   ex:"print(2 ** 8)  # 256\nprint(3 ** 3)  # 27"},
+  {kw:"+= -= *=",uz:"qisqartirilgan yozuv",cat:"op",
+   desc:"O'zgaruvchini o'ziga qo'shib/ayirib qayta yozish uchun qisqa usul.",
+   ex:"x = 10\nx += 5   # x = x + 5 → 15\nx -= 3   # x = x - 3 → 12\nx *= 2   # x = x * 2 → 24"},
+  {kw:"== != > < >= <=",uz:"taqqoslash operatorlari",cat:"op",
+   desc:"Ikki qiymatni taqqoslaydi, True yoki False qaytaradi.",
+   ex:"print(5 == 5)   # True\nprint(3 != 4)   # True\nprint(7 > 10)   # False\nprint(5 >= 5)   # True"},
+
+  // CONDITIONS
+  {kw:"if",uz:"agar (shart tekshirish)",cat:"cond",
+   desc:"Shart to'g'ri bo'lsa, blok bajariladi. Dasturga qaror qilish imkonini beradi.",
+   ex:"yosh = 18\nif yosh >= 18:\n    print('Voyaga yetgan')"},
+  {kw:"elif",uz:"aks holda — agar",cat:"cond",
+   desc:"Birinchi shart yolg'on bo'lsa, ikkinchi shartni tekshiradi.",
+   ex:"ball = 75\nif ball >= 90:\n    print('A')\nelif ball >= 70:\n    print('B')\nelif ball >= 50:\n    print('C')"},
+  {kw:"else",uz:"aks holda (qolgan holat)",cat:"cond",
+   desc:"Barcha shartlar yolg'on bo'lganda bajariladigan blok.",
+   ex:"x = -5\nif x > 0:\n    print('musbat')\nelse:\n    print('manfiy yoki nol')"},
+  {kw:"and",uz:"va (ikkalasi ham to'g'ri bo'lsin)",cat:"cond",
+   desc:"Ikki shart ham True bo'lsagina True qaytaradi.",
+   ex:"x = 15\nif x > 10 and x < 20:\n    print('10 va 20 orasida')"},
+  {kw:"or",uz:"yoki (bittasi to'g'ri bo'lsa yetarli)",cat:"cond",
+   desc:"Kamida bittasi True bo'lsa, natija True bo'ladi.",
+   ex:"kun = 'Shanba'\nif kun == 'Shanba' or kun == 'Yakshanba':\n    print('Dam olish kuni')"},
+  {kw:"not",uz:"emas (inkori)",cat:"cond",
+   desc:"True ni False ga, False ni True ga aylantiradi.",
+   ex:"x = False\nif not x:\n    print('x yolg\\'on')"},
+
+  // LOOPS
+  {kw:"for",uz:"for-tsikl (ma'lum marta takrorlash)",cat:"loop",
+   desc:"Ro'yxat yoki diapazondagi har bir element uchun kodni bir marta bajaradi.",
+   ex:"for i in range(5):\n    print(i)  # 0 1 2 3 4\n\nfor harf in 'Python':\n    print(harf)"},
+  {kw:"while",uz:"while-tsikl (shart to'g'ri ekan takrorla)",cat:"loop",
+   desc:"Shart True bo'lib turguncha kodni qayta-qayta bajaradi.",
+   ex:"son = 1\nwhile son <= 5:\n    print(son)\n    son += 1"},
+  {kw:"break",uz:"tsiklni to'xtatish",cat:"loop",
+   desc:"Tsiklni darhol to'xtatib, undan chiqadi.",
+   ex:"for i in range(10):\n    if i == 5:\n        break\n    print(i)  # 0,1,2,3,4"},
+  {kw:"continue",uz:"keyingi iteratsiyaga o'tish",cat:"loop",
+   desc:"Joriy iteratsiyani o'tkazib yuboradi, tsikl davom etadi.",
+   ex:"for i in range(6):\n    if i == 3:\n        continue\n    print(i)  # 0,1,2,4,5"},
+  {kw:"range()",uz:"son diapazoni yaratish",cat:"loop",
+   desc:"Berilgan oraliqdagi sonlar ketma-ketligini hosil qiladi. for bilan ko'p ishlatiladi.",
+   ex:"range(5)        # 0,1,2,3,4\nrange(2, 8)     # 2,3,4,5,6,7\nrange(0,10, 2)  # 0,2,4,6,8"},
+  {kw:"pass",uz:"hech narsa qilmaslik (joy qoldirish)",cat:"loop",
+   desc:"Hech bir amal bajarmaslik kerak bo'lganda ishlatiladi. Bo'sh blok yaratolmaysiz.",
+   ex:"for i in range(5):\n    pass  # keyinroq to'ldiraman\n\ndef yangi_funksiya():\n    pass"},
+
+  // FUNCTIONS
+  {kw:"def",uz:"funksiya e'lon qilish",cat:"func",
+   desc:"Qayta-qayta ishlatiladigan kod blokini bir nom ostida saqlaydi.",
+   ex:"def salom(ism):\n    print('Salom,', ism)\n\nsalom('Kamola')\nsalom('Jasur')"},
+  {kw:"return",uz:"natijani qaytarish",cat:"func",
+   desc:"Funksiya hisoblagan natijani chaqirgan joyga yuboradi.",
+   ex:"def kvadrat(x):\n    return x * x\n\nnatija = kvadrat(7)\nprint(natija)  # 49"},
+  {kw:"parameter",uz:"parametr (funksiyaga kiradigan o'zgaruvchi)",cat:"func",
+   desc:"Funksiya ta'rifida qavs ichida yoziladi. Funksiya ishlaganda qiymat oladi.",
+   ex:"# 'ism' va 'yosh' — parametrlar\ndef tanishtir(ism, yosh):\n    print(ism, yosh, 'yoshda')"},
+  {kw:"argument",uz:"argument (funksiyaga berilgan qiymat)",cat:"func",
+   desc:"Funksiyani chaqirganda parametrga beriladigan haqiqiy qiymat.",
+   ex:"def yig_ma(a, b):\n    return a + b\n# 3 va 7 — argumentlar\nprint(yig_ma(3, 7))"},
+  {kw:"lambda",uz:"bir qatorlik anonim funksiya",cat:"func",
+   desc:"Kichik, bir martalik funksiya uchun qisqa yozuv. def ishlatmasdan ham bo'ladi.",
+   ex:"ikkilat = lambda x: x * 2\nprint(ikkilat(5))  # 10\n\nqo_sh = lambda a,b: a + b\nprint(qo_sh(3, 4))"},
+  {kw:"*args",uz:"noma'lum miqdor argument",cat:"func",
+   desc:"Funksiyaga qancha argument berilishini oldindan bilmasangiz ishlatiladi.",
+   ex:"def yig_ma(*sonlar):\n    return sum(sonlar)\n\nprint(yig_ma(1,2,3))      # 6\nprint(yig_ma(5,10,15,20)) # 50"},
+  {kw:"**kwargs",uz:"kalit-qiymat ko'rinishida argumentlar",cat:"func",
+   desc:"Nomli argumentlarni lug'at ko'rinishida qabul qiladi.",
+   ex:"def info(**ma_lumot):\n    for k,v in ma_lumot.items():\n        print(k, ':', v)\n\ninfo(ism='Ali', yosh=20)"},
+
+  // TYPES
+  {kw:"int",uz:"butun son turi",cat:"type",
+   desc:"Manfiy, musbat va nol — kasr qismsiz sonlar. int() bilan turni almashtirish mumkin.",
+   ex:"x = 42\ny = -15\nz = int('100')  # satrdan songa\nprint(type(x))  # <class 'int'>"},
+  {kw:"float",uz:"kasr son (haqiqiy son)",cat:"type",
+   desc:"Nuqtali (kasr qismli) sonlar. Matematik hisob-kitoblarda ishlatiladi.",
+   ex:"pi = 3.14159\nnarx = 25.50\ndars = float('9.8')\nprint(type(pi))  # <class 'float'>"},
+  {kw:"str",uz:"matn (satr) turi",cat:"type",
+   desc:"Harflar, raqamlar, belgilardan iborat matn. Tirnoq ichida yoziladi.",
+   ex:"ism = 'Nodira'\nsalutatsiya = \"Salom!\"\nuzun = \"\"\"Ko\\'p\nsatrl\"\"\""},
+  {kw:"bool",uz:"mantiqiy tur (True yoki False)",cat:"type",
+   desc:"Faqat ikkita qiymat: True (to'g'ri) va False (yolg'on). Shartlarda asosiy rol.",
+   ex:"to_gri = True\nyolg_on = False\nprint(5 > 3)    # True\nprint(type(to_gri))"},
+  {kw:"None",uz:"bo'sh qiymat (hech narsa yo'q)",cat:"type",
+   desc:"O'zgaruvchida hozircha qiymat yo'qligini bildiradi. Null bilan tenglashtiriladi.",
+   ex:"natija = None\nif natija is None:\n    print('Hali qiymat yo\\'q')"},
+  {kw:"type()",uz:"turini aniqlash",cat:"type",
+   desc:"O'zgaruvchi yoki qiymatning turini qaytaradi.",
+   ex:"print(type(42))      # <class 'int'>\nprint(type(3.14))    # <class 'float'>\nprint(type('salom')) # <class 'str'>"},
+  {kw:"int() str() float()",uz:"turni o'zgartirish (type casting)",cat:"type",
+   desc:"Bir turdan boshqa turga o'tkazish. Foydalanuvchi kiritgan matnni songa aylantirish kerak bo'ladi.",
+   ex:"son = int('25')       # '25' → 25\nmatn = str(100)       # 100 → '100'\nkasr = float('3.14')  # → 3.14"},
+
+  // COLLECTIONS
+  {kw:"list [ ]",uz:"ro'yxat",cat:"coll",
+   desc:"Tartib bilan saqlangan, o'zgartirish mumkin bo'lgan elementlar to'plami.",
+   ex:"mevalar = ['olma','banan','uzum']\nprint(mevalar[0])    # olma\nmevalar.append('nok')\nprint(len(mevalar))  # 4"},
+  {kw:"tuple ( )",uz:"o'zgarmas ro'yxat",cat:"coll",
+   desc:"Ro'yxat kabi, lekin yaratilgandan keyin o'zgartirib bo'lmaydi. Xavfsizroq.",
+   ex:"ranglar = ('qizil', 'yashil', 'ko\\'k')\nprint(ranglar[1])  # yashil\n# ranglar[0] = 'sariq'  # XATO!"},
+  {kw:"dict { }",uz:"lug'at (kalit: qiymat)",cat:"coll",
+   desc:"Har bir qiymatga nom (kalit) berib saqlanadi. Haqiqiy lug'atga o'xshaydi.",
+   ex:"talaba = {\n    'ism': 'Sardor',\n    'yosh': 19,\n    'fan': 'Python'\n}\nprint(talaba['ism'])"},
+  {kw:"set { }",uz:"to'plam (takrorsiz elementlar)",cat:"coll",
+   desc:"Takrorlanmaydigan elementlar to'plami. Kalit tartib saqlamaydi.",
+   ex:"sonlar = {1, 2, 3, 2, 1}\nprint(sonlar)  # {1, 2, 3}\n\na = {1,2,3}\nb = {2,3,4}\nprint(a & b)   # {2, 3}"},
+  {kw:"append()",uz:"ro'yxat oxiriga element qo'shish",cat:"coll",
+   desc:"Ro'yxatning eng oxiriga yangi element qo'shadi.",
+   ex:"a = [10, 20, 30]\na.append(40)\nprint(a)  # [10, 20, 30, 40]"},
+  {kw:"remove() / pop()",uz:"elementni o'chirish",cat:"coll",
+   desc:"remove() qiymat bo'yicha, pop() indeks bo'yicha elementni o'chiradi.",
+   ex:"a = [1, 2, 3, 4]\na.remove(2)   # [1, 3, 4]\na.pop(0)      # [3, 4]\na.pop()       # [3] — oxirgini oladi"},
+  {kw:"len()",uz:"uzunlikni (elementlar sonini) aniqlash",cat:"coll",
+   desc:"Ro'yxat, satr yoki lug'atdagi elementlar sonini qaytaradi.",
+   ex:"print(len([1,2,3]))      # 3\nprint(len('Python'))     # 6\nprint(len({'a':1,'b':2})) # 2"},
+  {kw:"index ([ ])",uz:"indeks — elementga murojaat",cat:"coll",
+   desc:"Ro'yxatdagi elementga raqami orqali murojaat. 0 dan boshlanadi.",
+   ex:"a = ['a','b','c','d']\nprint(a[0])   # a\nprint(a[-1])  # d (oxirgi)\nprint(a[1:3]) # ['b','c']"},
+  {kw:"in / not in",uz:"ichida bor yoki yo'q",cat:"coll",
+   desc:"Ro'yxat, satr yoki lug'atda element borligini tekshiradi.",
+   ex:"mevalar = ['olma','nok']\nprint('olma' in mevalar)     # True\nprint('uzum' not in mevalar) # True"},
+
+  // ERRORS
+  {kw:"try",uz:"xatoni sinash bloki",cat:"err",
+   desc:"Bu blokdagi kod xato berishi mumkin. Python xatoni ushlashga harakat qiladi.",
+   ex:"try:\n    son = int('abc')  # xato!\nexcept ValueError:\n    print('Raqam emas!')"},
+  {kw:"except",uz:"xatoni ushlash",cat:"err",
+   desc:"try bloqi xato berganda bajariladi. Xato turini ko'rsatsa, faqat o'sha turni ushlaydi.",
+   ex:"try:\n    x = 10 / 0\nexcept ZeroDivisionError as e:\n    print('Xato:', e)"},
+  {kw:"finally",uz:"har doim bajariladi",cat:"err",
+   desc:"Xato bo'lsa ham, bo'lmasa ham shu blok bajariladi. Tozalash uchun ishlatiladi.",
+   ex:"try:\n    f = open('fayl.txt')\nexcept FileNotFoundError:\n    print('Fayl topilmadi')\nfinally:\n    print('Operatsiya tugadi')"},
+  {kw:"raise",uz:"xato chiqarish (tashlash)",cat:"err",
+   desc:"Qo'lda xato holat yaratadi. Funksiya noto'g'ri qiymat olganda ishlatiladi.",
+   ex:"def yosh_tekshir(yosh):\n    if yosh < 0:\n        raise ValueError('Yosh manfiy bo\\'lmaydi!')\n    return yosh"},
+
+  // OOP
+  {kw:"class",uz:"sinf yaratish",cat:"oop",
+   desc:"Ob'ektlar uchun shablon. Haqiqiy dunyo narsalarini modellashtiradi.",
+   ex:"class Mashina:\n    def __init__(self, rang):\n        self.rang = rang\n\nm = Mashina('qizil')\nprint(m.rang)"},
+  {kw:"object (instance)",uz:"ob'ekt — sinf nusxasi",cat:"oop",
+   desc:"Sinfdan yaratilgan konkret narsa. Har bir ob'ektning o'z ma'lumotlari bo'ladi.",
+   ex:"class Kishi:\n    def __init__(self, ism):\n        self.ism = ism\n\nk1 = Kishi('Ali')\nk2 = Kishi('Vali')"},
+  {kw:"__init__",uz:"konstruktor — ob'ekt yaratilganda ishga tushadi",cat:"oop",
+   desc:"Ob'ekt yaratilganida darhol chaqiriladigan maxsus metod. Boshlang'ich qiymatlarni o'rnatadi.",
+   ex:"class Doira:\n    def __init__(self, radius):\n        self.r = radius\n    def yuza(self):\n        return 3.14 * self.r ** 2"},
+  {kw:"self",uz:"ob'ektning o'ziga havola",cat:"oop",
+   desc:"Sinfning har bir metodida birinchi parametr. Ob'ektning o'z ma'lumotlariga murojaat qiladi.",
+   ex:"class Hisoblagich:\n    def __init__(self):\n        self.son = 0\n    def oshir(self):\n        self.son += 1"},
+  {kw:"inheritance",uz:"meros olish (vorislik)",cat:"oop",
+   desc:"Bola sinf ota sinfning barcha xususiyat va metodlarini meros olib oladi.",
+   ex:"class Hayvon:\n    def ovoz(self):\n        print('...')\n\nclass It(Hayvon):\n    def ovoz(self):\n        print('Vov!')"},
+
+  // MODULES
+  {kw:"import",uz:"kutubxona (modul) ulash",cat:"mod",
+   desc:"Tashqi modul yoki kutubxonani kodga ulaydi. Python bilan ko'p modul bepul keladi.",
+   ex:"import math\nprint(math.sqrt(16))  # 4.0\nprint(math.pi)        # 3.14159..."},
+  {kw:"from ... import",uz:"moduldan faqat kerakli qismini olish",cat:"mod",
+   desc:"Butun modulni emas, faqat kerakli funksiya yoki sinfni import qiladi.",
+   ex:"from math import sqrt, pi\nprint(sqrt(25))  # 5.0\nprint(pi)        # 3.14159"},
+  {kw:"as",uz:"taxallus (qisqa nom berish)",cat:"mod",
+   desc:"Uzoq nomli kutubxonaga qisqa taxallus beradi. numpy → np an'ana.",
+   ex:"import datetime as dt\nimport random as rnd\n\nbugun = dt.date.today()\nson = rnd.randint(1, 100)"},
+];
+
+let activeTab = "Hammasi";
+
+function buildTabs() {
+  const wrap = document.getElementById("tabsWrap");
+  wrap.innerHTML = "";
+  Object.keys(CATS).forEach(k => {
+    const b = document.createElement("button");
+    b.className = "tab" + (k === activeTab ? " active" : "");
+    b.textContent = k;
+    b.onclick = () => { activeTab = k; buildTabs(); render(); };
+    wrap.appendChild(b);
+  });
+}
+
+function highlight(text, q) {
+  if (!q) return text;
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return text.replace(re, '<mark style="background:rgba(124,106,247,0.3);color:inherit;border-radius:3px;">$1</mark>');
+}
+
+function render() {
+  const q = document.getElementById("searchInput").value.trim().toLowerCase();
+  const catFilter = CATS[activeTab];
+  const filtered = DATA.filter(d => {
+    const matchC = !catFilter || d.cat === catFilter;
+    const matchQ = !q || d.kw.toLowerCase().includes(q) ||
+                       d.uz.toLowerCase().includes(q) ||
+                       d.desc.toLowerCase().includes(q);
+    return matchC && matchQ;
+  });
+
+  document.getElementById("resultCount").textContent =
+    filtered.length + " ta so'z" + (q ? ` — "${q}" bo'yicha` : "");
+
+  const grid = document.getElementById("grid");
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty">Hech narsa topilmadi 🔍</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(d => `
+    <div class="card c-${d.cat}" onclick="this.classList.toggle('open')">
+      <div class="card-header">
+        <span class="keyword">${highlight(d.kw, q)}</span>
+        <span class="badge badge-${d.cat}">${CAT_LABEL[d.cat]}</span>
+      </div>
+      <div class="trans">${highlight(d.uz, q)}</div>
+      <div class="desc">${d.desc}</div>
+      <div class="example-block">
+        <div class="example-label">MISOL</div>
+        <div class="example-code">${d.ex.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      </div>
+      <div class="toggle-hint">▼ kod misolini ko'rish uchun bosing</div>
+    </div>
+  `).join('');
+}
+
+document.getElementById("searchInput").addEventListener("input", render);
+
+buildTabs();
+render();
+</script>
+</body>
+</html>
